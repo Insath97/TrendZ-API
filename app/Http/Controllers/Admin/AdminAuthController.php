@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HandleLoginRequest;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use PhpOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+
 
 class AdminAuthController extends Controller
 {
@@ -30,12 +32,16 @@ class AdminAuthController extends Controller
     public function logout(Request $request)
     {
         try {
+            // Get the token from the request
+            $token = JWTAuth::parseToken();
+
             // Invalidate the token
-            JWTAuth::invalidate(JWTAuth::getToken());
+            JWTAuth::invalidate($token);
+
             return response()->json([
                 'message' => 'Logout successful',
             ], 200);
-        } catch (\Throwable $th) {
+        } catch (JWTException $e) {
             return response()->json([
                 'message' => 'Failed to logout. Token might be invalid or expired.',
             ], 400);

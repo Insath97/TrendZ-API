@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('merchants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('saloon_id')->constrained('shops')->onDelete('cascade');
+            $table->text('image')->nullable();
             $table->string('name');
-            $table->string('description');
-            $table->decimal('price');
-            $table->integer('duratin');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
             $table->boolean('status')->default(1);
-            $table->boolean('delete_status')->default(1); // 1 => active, 0 => deleted
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('merchants');
     }
 };

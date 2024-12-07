@@ -14,7 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'JWTAuth' => PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::class,
+            'JWTFactory' => PHPOpenSourceSaver\JWTAuth\Facades\JWTFactory::class,
+            'auth:admin' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
+            'auth:merchant' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
+            'auth:api' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
+            'jwt.refresh' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\RefreshToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $e, Request $request) {

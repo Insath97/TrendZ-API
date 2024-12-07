@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     /* Reset password */
     Route::get('reset-password/{token}', [AdminAuthController::class, 'ResetPassword']);
     Route::post('reset-password', [AdminAuthController::class, 'handleResetPassword']);
+});
+
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admin']], function () {
+
+    /* Trendz Branch */
+    Route::apiResource('shop', ShopController::class);
 });

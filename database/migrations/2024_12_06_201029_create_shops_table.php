@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
+            $table->boolean('status')->default(1); // 1 => active 0 => deactivate shop
             $table->boolean('delete_status')->default(1); // 1 => active, 0 => deleted
             $table->timestamps();
         });
