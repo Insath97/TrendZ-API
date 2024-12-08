@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->foreignId('saloon_id')->constrained('shops')->onDelete('cascade');
+            $table->string('code')->unique();
             $table->string('name');
-            $table->string('description');
+            $table->string('icon');
+            $table->text('description');
             $table->decimal('price');
             $table->integer('duration');
             $table->boolean('status')->default(1);

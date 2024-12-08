@@ -5,27 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Shop extends Model
+class Service extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'saloon_id',
         'code',
         'name',
-        'address',
-        'phone_number',
-        'email',
+        'icon',
+        'description',
+        'price',
+        'duration',
         'status',
         'delete_status'
     ];
 
-    public function merchant()
+    public function shop()
     {
-        return $this->hasOne(Merchant::class);
-    }
-
-    public function services()
-    {
-        return $this->hasMany(Service::class, 'saloon_id');
+        return $this->belongsTo(Shop::class, 'saloon_id');
     }
 }

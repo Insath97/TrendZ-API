@@ -32,5 +32,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admi
     Route::get('deactive-merchant/{id}', [MerchantController::class, 'MerchantToggle']);
     Route::apiResource('merchant', MerchantController::class);
 
-    /* Particular Shop Services */
 });
+
+/*
+    Pending Work
+
+    1. admin deactivate particular shop
+    2. reset password
+    3. forgot password
+    4. refresh token
+*/
