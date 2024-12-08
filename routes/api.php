@@ -1,28 +1,19 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+/* Admin Route */
 
-    /* Admin Login*/
-    Route::post('login', [AdminAuthController::class, 'handleLogin']);
+require __DIR__ . '/admin.php';
 
-    /*  Forgot password */
-    Route::post('forgot-password', [AdminAuthController::class, 'sendResetLink']);
+/* Merchant Route */
+require __DIR__ . '/merchant.php';
 
-    /* Reset password */
-    Route::get('reset-password/{token}', [AdminAuthController::class, 'ResetPassword']);
-    Route::post('reset-password', [AdminAuthController::class, 'handleResetPassword']);
-});
+/* Customer Route */
+require __DIR__ . '/customer.php';
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admin']], function () {
-
-    /* Admin Logout */
-    Route::post('logout', [AdminAuthController::class, 'logout']);
-
-    /* Trendz Branch */
-    Route::apiResource('shop', ShopController::class);
+// Other common API routes (if any)
+Route::get('/health-check', function () {
+    return response()->json(['status' => 'API is working!']);
 });

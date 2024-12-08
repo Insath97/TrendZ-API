@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->decimal('price');
-            $table->integer('duratin');
+            $table->integer('duration');
             $table->boolean('status')->default(1);
             $table->boolean('delete_status')->default(1); // 1 => active, 0 => deleted
             $table->timestamps();

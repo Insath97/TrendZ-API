@@ -17,4 +17,9 @@ class Shop extends Model
         'email',
         'delete_status'
     ];
+
+    public function merchant()
+    {
+        return $this->hasOne(Merchant::class);
+    }
 }
