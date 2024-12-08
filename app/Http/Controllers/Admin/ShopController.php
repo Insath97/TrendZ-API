@@ -74,4 +74,22 @@ class ShopController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to delete shop'], 500);
         }
     }
+
+    public function getShops()
+    {
+        try {
+            $branch = Shop::where('delete_status', 1)
+                ->select('id', 'code', 'name')
+                ->orderBy('name', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Shop data retrieved successfully',
+                'data' => $branch
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => 'Failed to get shop data'], 500);
+        }
+    }
 }
