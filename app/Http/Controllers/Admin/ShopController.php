@@ -13,7 +13,7 @@ class ShopController extends Controller
 {
     public function index()
     {
-        $branch = Shop::where('delete_status', 1)->get();
+        $branch = Shop::where(['status' => 1, 'delete_status' => 1])->get();
 
         if ($branch->isEmpty()) {
             return response()->json(['message' => 'No Data Found'], 200);
