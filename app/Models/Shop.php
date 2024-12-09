@@ -28,4 +28,9 @@ class Shop extends Model
     {
         return $this->hasMany(Service::class, 'saloon_id');
     }
+
+    public function slots()
+    {
+        return $this->hasMany(Slot::class, 'saloon_id');
+    }
 }

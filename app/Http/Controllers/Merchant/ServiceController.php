@@ -123,8 +123,13 @@ class ServiceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Service status updated successfully.',
-                'data' => new ServiceResource($service),
+                'data' => [
+                    'service_id' => $service->id,
+                    'name' => $service->name,
+                    'status' => $service->status ? 'active' : 'inactive',
+                ],
             ], 200);
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
