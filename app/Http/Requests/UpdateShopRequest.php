@@ -25,6 +25,7 @@ class UpdateShopRequest extends FormRequest
     {
         $id = $this->route('shop');
         return [
+            'location_id' => ['required', 'exists:locations,id'],
             'code' => ['required', 'string', 'max:10', 'unique:shops,code,' . $id],
             'name' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],

@@ -14,5 +14,9 @@ class Location extends Model
         'status',
         'delete_status',
     ];
-    
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'location_id');
+    }
 }

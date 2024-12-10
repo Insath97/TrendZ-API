@@ -24,6 +24,7 @@ class StoreShopRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'location_id' => ['required', 'exists:locations,id'],
             'code' => ['required', 'string', 'max:10', 'unique:shops,code'],
             'name' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],

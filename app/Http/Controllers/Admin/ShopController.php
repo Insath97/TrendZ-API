@@ -13,7 +13,7 @@ class ShopController extends Controller
 {
     public function index()
     {
-        $branch = Shop::where(['status' => 1, 'delete_status' => 1])->get();
+        $branch = Shop::with('location')->where(['status' => 1, 'delete_status' => 1])->get();
 
         if ($branch->isEmpty()) {
             return response()->json(['message' => 'No Data Found'], 200);
@@ -37,7 +37,7 @@ class ShopController extends Controller
 
     public function show(string $Shop)
     {
-        $branch = Shop::find($Shop);
+        $branch = Shop::with('location')->find($Shop);
 
         return response()->json([
             'success' => true,
