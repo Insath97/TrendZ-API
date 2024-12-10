@@ -19,4 +19,9 @@ class Location extends Model
     {
         return $this->hasOne(Shop::class, 'location_id');
     }
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'location_id');
+    }
 }
