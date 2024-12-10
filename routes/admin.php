@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MerchantController;
 use App\Http\Controllers\Admin\ShopController;
 use Illuminate\Http\Request;
@@ -24,6 +25,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admi
     /* Admin Logout */
     Route::post('logout', [AdminAuthController::class, 'logout']);
 
+    /* Location */
+    Route::apiResource('location', LocationController::class);
+
     /* Trendz Branch */
     Route::get('get-shop', [ShopController::class, 'getShops']);
     Route::apiResource('shop', ShopController::class);
@@ -31,7 +35,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admi
     /* Merchant */
     Route::get('deactive-merchant/{id}', [MerchantController::class, 'MerchantToggle']);
     Route::apiResource('merchant', MerchantController::class);
-
 });
 
 /*
