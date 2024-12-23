@@ -9,13 +9,11 @@ use App\Http\Resources\MerchantResource;
 use App\Mail\MerchantCredentialsMail;
 use App\Models\Merchant;
 use App\Models\Shop;
-use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class MerchantController extends Controller
 {
-    use FileUploadTrait;
 
     public function index()
     {
