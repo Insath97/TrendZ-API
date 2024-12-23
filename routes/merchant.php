@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ShopController;
+use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\MerchantAuthController;
 use App\Http\Controllers\Merchant\ServiceController;
 use App\Http\Controllers\Merchant\SlotController;
@@ -16,6 +18,9 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
 
     /* merchant Logout */
     Route::post('logout', [MerchantAuthController::class, 'logout']);
+
+    /* fetch all shops */
+    Route::get('get-shop', [ShopController::class, 'getShops']);
 
     /* Particular Shop Services */
     Route::get('deactivate-service/{id}', [ServiceController::class, 'deactivateService']);

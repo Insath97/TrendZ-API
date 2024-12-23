@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateShopRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller
 {
@@ -92,4 +93,5 @@ class ShopController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to get shop data'], 500);
         }
     }
+
 }

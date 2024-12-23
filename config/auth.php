@@ -42,7 +42,7 @@ return [
         ],
         'customer' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'customers',
         ],
         'admin' => [
             'driver' => 'jwt',
@@ -83,6 +83,10 @@ return [
         'merchants' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\Merchant::class),
+        ],
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Customer::class),
         ],
 
         // 'users' => [
@@ -125,6 +129,12 @@ return [
         ],
         'merchants' => [
             'provider' => 'merchants',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'customers' => [
+            'provider' => 'customers',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

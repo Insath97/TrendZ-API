@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HandleLoginRequest;
+use App\Models\Merchant;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
@@ -18,12 +19,13 @@ class MerchantAuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $admin = auth('merchant')->user();
+        $merchant  = auth('merchant')->user();
+        $merchant = Merchant::with('shop')->find($merchant->id);
 
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
-            'data' => $admin,
+            'data' => $merchant,
         ], 200);
     }
 
