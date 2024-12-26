@@ -21,7 +21,10 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* get shops */
     Route::get('shop/{id}', [HomeController::class, 'cusShops']);
-    
+
     /* get services */
     Route::get('service/{id}', [HomeController::class, 'cusServices']);
+
+    /* get slots */
+    Route::get('slot/{id}', [HomeController::class, 'cusSlots']);
 });

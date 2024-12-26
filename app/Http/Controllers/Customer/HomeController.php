@@ -7,6 +7,7 @@ use App\Http\Resources\ShopResource;
 use App\Models\Location;
 use App\Models\Service;
 use App\Models\Shop;
+use App\Models\Slot;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -43,6 +44,7 @@ class HomeController extends Controller
     public function cusServices(string $id)
     {
         $shop = Shop::find($id);
+
         if (!$shop) {
             return response()->json([
                 'success' => false,
@@ -65,6 +67,35 @@ class HomeController extends Controller
             'success' => true,
             'message' => 'Services retrieved successfully',
             'data' => $services
+        ], 200);
+    }
+
+    public function cusSlots(string $id)
+    {
+        $shop = Shop::find($id);
+
+        if (!$shop) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Shop not found',
+                'data' => []
+            ], 404);
+        }
+
+        $slots = Slot::where('saloon_id', $id)->where(['is_active' => 1, 'delete_status' => 1])->get();
+
+        if ($slots->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No slots found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Slots retrieved successfully',
+            'data' => $slots
         ], 200);
     }
 }
