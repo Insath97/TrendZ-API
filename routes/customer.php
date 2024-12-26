@@ -19,4 +19,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
 
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth:customer']], function () {
 
+    /* get services */
+    Route::get('service/{id}',[HomeController::class,'cusServices']);
 });
