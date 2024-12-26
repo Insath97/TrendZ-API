@@ -52,13 +52,14 @@ class AuthController extends Controller
         }
 
         $customer = auth('customer')->user();
-        
+        $customer = Customer::with('location')->find($customer->id);
+
         // Return token on successful login
         return response()->json([
             'success' => true,
             'message' => 'Customer logged in successfully',
             'token' => $token,
-            'data'=>$customer
+            'data' => $customer
         ], 200);
     }
 }
