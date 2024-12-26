@@ -17,7 +17,7 @@ class AuthController extends Controller
         $customer->image = "/image";
         $customer->name = $request->name;
         $customer->email = $request->email;
-        $customer->password = $request->password;
+        $customer->password =  bcrypt($request->password);
         $customer->gender = $request->gender;
         $customer->dob = $request->dob;
         $customer->phone_number = $request->phone_number;
