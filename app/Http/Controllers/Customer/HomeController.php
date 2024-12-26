@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ShopResource;
 use App\Models\Location;
 use App\Models\Service;
 use App\Models\Shop;
@@ -26,6 +27,16 @@ class HomeController extends Controller
             'success' => true,
             'message' => 'Locations retrieved successfully',
             'data' => $locations
+        ], 200);
+    }
+
+    public function cusShops(string $id)
+    {
+        $shop = Shop::with('location')->find($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => new ShopResource($shop)
         ], 200);
     }
 
