@@ -51,11 +51,14 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $customer = auth('customer')->user();
+        
         // Return token on successful login
         return response()->json([
             'success' => true,
             'message' => 'Customer logged in successfully',
-            'token' => $token
+            'token' => $token,
+            'data'=>$customer
         ], 200);
     }
 }
