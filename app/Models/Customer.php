@@ -76,4 +76,6 @@ class Customer extends Authenticatable implements JWTSubject
     {
         return Carbon::parse($this->dob)->age;
     }
+
+    
 }

@@ -27,4 +27,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* get slots */
     Route::get('slot/{id}', [HomeController::class, 'cusSlots']);
+
+    /* booking */
+
 });
