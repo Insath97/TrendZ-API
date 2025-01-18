@@ -142,12 +142,20 @@ class HomeController extends Controller
             $booking->total_amount = $request->total_amount;
             $booking->save();
 
-            foreach ($request->services as $services) {
-                $bookingService = new BookingService();
-                $bookingService->booking_id = $booking->id;
-                $bookingService->service_id = $services['service_id'];
-                $bookingService->total_amount = $request->total_amount;
-                $bookingService->save();
+            if (!empty($request->services) && is_array($request->services)) {
+                foreach ($request->services as $service) {
+                    BookingService::create([
+                        'booking_id' => $booking->id,
+                        'service_id' => $service['service_id'],
+                        'quantity' => $service['quantity'],
+                        'price' => $service['price'],
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid or missing services data',
+                ], 422);
             }
 
             return response()->json([
@@ -156,7 +164,7 @@ class HomeController extends Controller
                 'booking' => $booking,
             ], 201);
         } catch (\Throwable $th) {
-            return response()->json(['success' => true, 'message' => 'Error creating booking', 'error' => $th->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Error creating booking', 'error' => $th->getMessage()], 500);
         }
     }
 }
