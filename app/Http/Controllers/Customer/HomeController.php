@@ -147,6 +147,7 @@ class HomeController extends Controller
                 $bookingService->booking_id = $booking->id;
                 $bookingService->service_id = $services['service_id'];
                 $bookingService->total_amount = $request->total_amount;
+                $bookingService->save();
             }
 
             return response()->json([
