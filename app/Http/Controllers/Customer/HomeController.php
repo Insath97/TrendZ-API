@@ -166,4 +166,15 @@ class HomeController extends Controller
             return response()->json(['success' => false, 'message' => 'Error creating booking', 'error' => $th->getMessage()], 500);
         }
     }
+
+    public function check()
+    {
+        $booking = Booking::all();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'API is working',
+            'data' => $booking
+        ], 200);
+    }
 }

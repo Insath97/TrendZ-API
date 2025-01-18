@@ -15,6 +15,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
 
     /* location */
     Route::get('get-location', [HomeController::class, 'getLocation']);
+
+    /* testing data */
+    Route::get('check',[HomeController::class, 'check']);
 });
 
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth:customer']], function () {
