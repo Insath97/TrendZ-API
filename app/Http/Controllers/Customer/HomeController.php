@@ -147,8 +147,7 @@ class HomeController extends Controller
                     BookingService::create([
                         'booking_id' => $booking->id,
                         'service_id' => $service['service_id'],
-                        'quantity' => $service['quantity'],
-                        'price' => $service['price'],
+                        'total_amount ' => $request->total_amount,
                     ]);
                 }
             } else {
