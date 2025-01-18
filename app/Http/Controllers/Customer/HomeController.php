@@ -169,7 +169,7 @@ class HomeController extends Controller
 
     public function check()
     {
-        $booking = Booking::all();
+        $booking = Booking::with('services')->get();
 
         return response()->json([
             'success' => true,
