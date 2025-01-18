@@ -29,5 +29,5 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
     Route::get('slot/{id}', [HomeController::class, 'cusSlots']);
 
     /* booking */
-
+    Route::post('booking/create',[HomeController::class, 'createBooking']);
 });

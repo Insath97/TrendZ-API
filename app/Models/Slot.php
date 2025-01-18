@@ -24,4 +24,6 @@ class Slot extends Model
     {
         return $this->belongsTo(Shop::class, 'saloon_id');
     }
+
+    
 }
