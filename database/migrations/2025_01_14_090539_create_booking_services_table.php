@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('booking_id')->constrained('bookings')->onDelete('cascade');
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->nullable();
             $table->timestamps();
         });
     }
