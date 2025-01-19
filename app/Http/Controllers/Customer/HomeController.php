@@ -104,7 +104,7 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function createBooking(CreateBookingRequest $request)
+    public function createBooking(Request $request)
     {
         try {
 
