@@ -25,5 +25,16 @@ class Slot extends Model
         return $this->belongsTo(Shop::class, 'saloon_id');
     }
 
-    
+   /*  public function checkAndUpdateStatus()
+    {
+        $currentBookings = $this->bookings()->count();
+
+        if ($currentBookings >= $this->max_bookings) {
+            $this->update([
+                'is_recurring' => false,
+            ]);
+        }
+    } */
+
+
 }

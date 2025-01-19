@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('max_bookings')->default(1);
-            $table->boolean('is_recurring')->default(1); // If slot repeats weekly
+            $table->boolean('is_recurring')->default(1); // 
             $table->boolean('is_active')->default(1); //(1 = active, 0 = inactive
             $table->boolean('delete_status')->default(1); // 1 => active, 0 => deleted
             $table->timestamps();

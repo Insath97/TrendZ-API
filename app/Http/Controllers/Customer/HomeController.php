@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateBookingRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Booking;
 use App\Models\BookingService;
+use App\Models\BookingSlots;
 use App\Models\Location;
 use App\Models\Service;
 use App\Models\Shop;
@@ -102,7 +104,7 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function createBooking(Request $request)
+    public function createBooking(CreateBookingRequest $request)
     {
         try {
 
@@ -142,6 +144,7 @@ class HomeController extends Controller
             $booking->total_amount = $request->total_amount;
             $booking->save();
 
+            /* services get */
             if (!empty($request->services) && is_array($request->services)) {
                 foreach ($request->services as $service) {
                     BookingService::create([
@@ -157,6 +160,12 @@ class HomeController extends Controller
                 ], 422);
             }
 
+            /* slots get */
+            BookingSlots::create([
+                'booking_id' => $booking->id,
+                'slot_id' => $request->slot_id,
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Booking created successfully',
@@ -167,9 +176,30 @@ class HomeController extends Controller
         }
     }
 
+    public function cancelBooking(string $id, Request $request)
+    {
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+                'data' => []
+            ], 404);
+        }
+
+        $booking->cancel($request->cancellation_reason);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking canceled successfully',
+            'data' => $booking
+        ], 200);
+    }
+
     public function check()
     {
-        $booking = Booking::with('services')->get();
+        $booking = Booking::with('services', 'slots')->get();
 
         return response()->json([
             'success' => true,
