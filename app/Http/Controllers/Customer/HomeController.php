@@ -132,7 +132,7 @@ class HomeController extends Controller
             $endOfDay = Carbon::tomorrow();
 
             $appoinment_number = Booking::where('shop_id', $request->shop_id)
-                ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                // ->whereBetween('created_at', [$startOfDay, $endOfDay])
                 ->count() + 1;
 
             $booking = new Booking();
