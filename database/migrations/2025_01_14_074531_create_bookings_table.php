@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
             $table->date('booking_date');
             $table->string('unique_reference')->unique();
-            $table->integer('booking_number')->unique();
+            $table->integer('booking_number');
             $table->decimal('total_amount', 10, 2);
             $table->enum('status', ['upcoming', 'completed', 'canceled', 'rescheduled'])->default('upcoming');
             $table->string('cancellation_reason')->nullable();
