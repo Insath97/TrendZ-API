@@ -108,6 +108,30 @@ class HomeController extends Controller
     {
         try {
 
+            /* validate slots */
+            $slot = Slot::find($request->slot_id);
+
+            if (!$slot) {
+                return response()->json(['success' => false, 'message' => 'Slot not found'], 404);
+            }
+
+            $current_booking_count = BookingSlots::where('slot_id', $slot->id)
+                ->whereHas('booking', function ($query) use ($request) {
+                    $query->where('booking_date', $request->booking_date);
+                })
+                ->count();
+
+            if ($current_booking_count >= $slot->max_bookings) {
+                // Automatically set is_recurring to false
+                $slot->is_recurring = false;
+                $slot->save();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Slot is fully booked for the selected day.'
+                ], 400);
+            }
+
             /* create reference number format => shopecode+YY+MM=0001 */
 
             /* 1. get shop code */
@@ -132,7 +156,7 @@ class HomeController extends Controller
             $endOfDay = Carbon::tomorrow();
 
             $appoinment_number = Booking::where('shop_id', $request->shop_id)
-                // ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                ->whereBetween('created_at', [$startOfDay, $endOfDay])
                 ->count() + 1;
 
             $booking = new Booking();

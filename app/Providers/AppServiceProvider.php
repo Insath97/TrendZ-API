@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        BookingSlots::observe(BookingSlotObserver::class);
+       
     }
 }
