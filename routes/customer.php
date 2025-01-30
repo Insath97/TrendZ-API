@@ -36,4 +36,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* cancel booking */
     Route::post('booking/{id}/cancel', [HomeController::class, 'cancelBooking']);
+
+    /* rescheduling booking */
+    Route::post('booking/{id}/reschedule', [HomeController::class, 'rescheduleBooking']);
 });

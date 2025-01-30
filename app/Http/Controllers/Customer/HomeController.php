@@ -238,6 +238,95 @@ class HomeController extends Controller
         }
     }
 
+    public function rescheduleBooking(Request $request, string $id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+
+            if ($booking->status == 'canceled') {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Canceled bookings cannot be rescheduled.'
+                    ],
+                    400
+                );
+            }
+
+            $slot = Slot::find($request->slot_id);
+
+            if (!$slot) {
+                return response()->json(['success' => false, 'message' => 'Slot not found'], 404);
+            }
+
+            $current_booking_count = BookingSlots::where('slot_id', $slot->id)
+                ->whereHas('booking', function ($query) use ($request) {
+                    $query->where('booking_date', $request->booking_date)
+                        ->where('status', '!=', 'canceled');
+                })
+                ->count();
+
+            if ($current_booking_count >= $slot->max_bookings) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'The selected slot is fully booked.'
+                    ],
+                    400
+                );
+            }
+
+            $startOfDay = Carbon::parse($request->new_booking_date)->startOfDay();
+            $endOfDay = Carbon::parse($request->new_booking_date)->endOfDay();
+
+            $new_appointment_number = Booking::where('shop_id', $booking->shop_id)
+                ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                ->where('status', '!=', 'canceled')
+                ->count() + 1;
+
+            $booking->booking_date = $request->new_booking_date;
+            $booking->status = 'rescheduled';
+            $booking->booking_number = $new_appointment_number;
+            $booking->save();
+
+            BookingSlots::where('booking_id', $booking->id)->update([
+                'slot_id' => $request->new_slot_id,
+            ]);
+
+            if ($request->has('services') && count($request->services) > 0) {
+
+                BookingService::where('booking_id', $booking->id)->delete();
+
+                if (!empty($request->services) && is_array($request->services)) {
+                    foreach ($request->services as $service) {
+                        BookingService::create([
+                            'booking_id' => $booking->id,
+                            'service_id' => $service['service_id'],
+                            'total_amount ' => $request->total_amount,
+                        ]);
+                    }
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid or missing services data',
+                    ], 422);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking successfully rescheduled.',
+                'booking' => $booking,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error reshedule booking',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function check()
     {
         $booking = Booking::with('services', 'slots')->get();
