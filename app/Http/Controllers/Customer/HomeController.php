@@ -117,7 +117,8 @@ class HomeController extends Controller
 
             $current_booking_count = BookingSlots::where('slot_id', $slot->id)
                 ->whereHas('booking', function ($query) use ($request) {
-                    $query->where('booking_date', $request->booking_date);
+                    $query->where('booking_date', $request->booking_date)
+                        ->where('status', '!=', 'canceled');
                 })
                 ->count();
 
@@ -157,6 +158,7 @@ class HomeController extends Controller
 
             $appoinment_number = Booking::where('shop_id', $request->shop_id)
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                ->where('status', '!=', 'canceled')
                 ->count() + 1;
 
             $booking = new Booking();
@@ -202,23 +204,38 @@ class HomeController extends Controller
 
     public function cancelBooking(string $id, Request $request)
     {
-        $booking = Booking::find($id);
+        try {
+            $booking = Booking::find($id);
 
-        if (!$booking) {
+            if ($booking->status === 'canceled') {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Booking is already canceled.'
+                    ],
+                    400
+                );
+            }
+
+            $booking->status = 'canceled';
+            $booking->cancellation_reason = $request->cancellation_reason;
+            $booking->save();
+
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'Booking has been canceled successfully.',
+                    'booking' => $booking
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Booking not found',
-                'data' => []
-            ], 404);
+                'message' => 'Error canceling booking',
+                'error' => $th->getMessage()
+            ], 500);
         }
-
-        $booking->cancel($request->cancellation_reason);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking canceled successfully',
-            'data' => $booking
-        ], 200);
     }
 
     public function check()

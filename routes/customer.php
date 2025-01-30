@@ -17,7 +17,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
     Route::get('get-location', [HomeController::class, 'getLocation']);
 
     /* testing data */
-    Route::get('check',[HomeController::class, 'check']);
+    Route::get('check', [HomeController::class, 'check']);
 });
 
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth:customer']], function () {
@@ -32,8 +32,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
     Route::get('slot/{id}', [HomeController::class, 'cusSlots']);
 
     /* create booking */
-    Route::post('booking/create',[HomeController::class, 'createBooking']);
+    Route::post('booking/create', [HomeController::class, 'createBooking']);
 
     /* cancel booking */
-    Route::post('booking/cancel/{id}',[HomeController::class, 'cancelBooking']);
+    Route::post('booking/{id}/cancel', [HomeController::class, 'cancelBooking']);
 });
