@@ -39,4 +39,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* rescheduling booking */
     Route::post('booking/{id}/reschedule', [HomeController::class, 'rescheduleBooking']);
+
+    /* pending booking list */
+    Route::get('booking/pending', [HomeController::class, 'pendingBooking']);
 });
