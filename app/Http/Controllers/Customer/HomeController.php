@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CancelBookingRequest;
 use App\Http\Requests\CreateBookingRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Booking;
@@ -104,7 +105,7 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function createBooking(Request $request)
+    public function createBooking(CreateBookingRequest $request)
     {
         try {
 
@@ -118,7 +119,7 @@ class HomeController extends Controller
             $current_booking_count = BookingSlots::where('slot_id', $slot->id)
                 ->whereHas('booking', function ($query) use ($request) {
                     $query->where('booking_date', $request->booking_date)
-                        ->where('status', '!=', 'canceled');
+                        ->where('status', 'upcoming');
                 })
                 ->count();
 
@@ -158,7 +159,7 @@ class HomeController extends Controller
 
             $appoinment_number = Booking::where('shop_id', $request->shop_id)
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
-                ->where('status', '!=', 'canceled')
+                ->where('status', 'upcoming')
                 ->count() + 1;
 
             $booking = new Booking();
@@ -202,7 +203,7 @@ class HomeController extends Controller
         }
     }
 
-    public function cancelBooking(string $id, Request $request)
+    public function cancelBooking(string $id, CancelBookingRequest $request)
     {
         try {
             $booking = Booking::find($id);
@@ -262,7 +263,7 @@ class HomeController extends Controller
             $current_booking_count = BookingSlots::where('slot_id', $slot->id)
                 ->whereHas('booking', function ($query) use ($request) {
                     $query->where('booking_date', $request->booking_date)
-                        ->where('status', '!=', 'canceled');
+                        ->where('status', 'upcoming');
                 })
                 ->count();
 
@@ -281,11 +282,11 @@ class HomeController extends Controller
 
             $new_appointment_number = Booking::where('shop_id', $booking->shop_id)
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
-                ->where('status', '!=', 'canceled')
+                ->where('status', 'upcoming')
                 ->count() + 1;
 
             $booking->booking_date = $request->new_booking_date;
-            $booking->status = 'rescheduled';
+            $booking->status = 'upcoming';
             $booking->booking_number = $new_appointment_number;
             $booking->save();
 

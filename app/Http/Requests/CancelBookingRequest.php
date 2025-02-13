@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateBookingRequest extends FormRequest
+class CancelBookingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,7 @@ class CreateBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => ['required', 'exists:customers,id'],
-            'shop_id' => ['required', 'exists:shops,id'],
-            'booking_date' => ['required', 'date', 'after_or_equal:today', 'before_or_equal:' . now()->addMonth()->toDateString()],
-            'unique_reference' => ['required', 'string', 'unique:bookings,unique_reference'],
-            'booking_number' => ['required', 'integer', 'min:1'],
-            'total_amount' => ['required', 'numeric', 'min:0'],
-            'slot_id'=> ['required', 'exists:slots,id'],
-            'services.*.id' => ['required', 'exists:services,id'],
-            'cancellation_reason' => ['nullable', 'string'],
+            'cancellation_reason' => ['required', 'string'],
         ];
     }
 
