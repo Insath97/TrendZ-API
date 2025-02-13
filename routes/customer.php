@@ -42,4 +42,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* pending booking list */
     Route::get('booking/pending', [HomeController::class, 'pendingBooking']);
+
+    /* compeled booking list */
+    Route::get('booking/completed', [HomeController::class, 'completedBooking']);
 });
