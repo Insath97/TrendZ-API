@@ -451,6 +451,46 @@ class HomeController extends Controller
         }
     }
 
+    public function allBooking()
+    {
+        try {
+
+            if (!auth('customer')->check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized access'
+                ], 401);
+            }
+
+            $customer_id = auth('customer')->id();
+
+            $bookings = Booking::with('services', 'slots')
+                ->where('customer_id', $customer_id)
+                ->with('services', 'slots')
+                ->get();
+
+            if ($bookings->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No bookings found',
+                    'data' => []
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bookings retrieved successfully',
+                'data' => $bookings
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching bookings',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function check()
     {
         $booking = Booking::with('services', 'slots')->get();
