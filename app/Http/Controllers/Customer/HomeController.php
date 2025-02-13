@@ -410,6 +410,47 @@ class HomeController extends Controller
         }
     }
 
+    public function cancelledBooking()
+    {
+        try {
+
+            if (!auth('customer')->check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized access'
+                ], 401);
+            }
+
+            $customer_id = auth('customer')->id();
+
+            $bookings = Booking::with('services', 'slots')
+                ->where('customer_id', $customer_id)
+                ->where('status', 'canceled')
+                ->with('services', 'slots')
+                ->get();
+
+            if ($bookings->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No canceled bookings found',
+                    'data' => []
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Canceled bookings retrieved successfully',
+                'data' => $bookings
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching canceled bookings',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function check()
     {
         $booking = Booking::with('services', 'slots')->get();

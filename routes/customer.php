@@ -45,4 +45,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
     /* compeled booking list */
     Route::get('booking/completed', [HomeController::class, 'completedBooking']);
+
+    /* cancelled booking list */
+    Route::get('booking/cancelled', [HomeController::class, 'cancelledBooking']);
 });
