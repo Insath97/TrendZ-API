@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WalkingCustomer as ResourcesWalkingCustomer;
+use App\Models\Service;
 use App\Models\WalkingCustomer as ModelsWalkingCustomer;
 use Illuminate\Http\Request;
 
@@ -43,7 +44,7 @@ class WalkingCustomer extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Walking customer created successfully',
-                'data' => $customer,
+                'data' => new ResourcesWalkingCustomer($customer),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -78,20 +79,21 @@ class WalkingCustomer extends Controller
             $customer->occupation = $request->occupation;
             $customer->save();
 
-            // Attach services if provided
-            if ($request->has('services')) {
-                $customer->services()->attach($request->services);
+            // Sync services if provided
+            if ($request->filled('services')) {
+                $validatedServices = Service::whereIn('id', $request->services)->pluck('id')->toArray();
+                $customer->services()->sync($validatedServices);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Walking customer created successfully',
-                'data' => $customer,
+                'message' => 'Walking customer updated successfully',
+                'data' => new ResourcesWalkingCustomer($customer),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create walking customer',
+                'message' => 'Failed to update walking customer',
                 'error' => $e->getMessage()
             ], 500);
         }
