@@ -41,10 +41,12 @@ class WalkingCustomer extends Controller
                 $customer->services()->attach($request->services);
             }
 
+            $walking_customer = ModelsWalkingCustomer::with('services')->find($customer->id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Walking customer created successfully',
-                'data' => new ResourcesWalkingCustomer($customer),
+                'data' => $walking_customer,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -85,10 +87,12 @@ class WalkingCustomer extends Controller
                 $customer->services()->sync($validatedServices);
             }
 
+            $walking_customer = ModelsWalkingCustomer::with('services')->find($customer->id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Walking customer updated successfully',
-                'data' => new ResourcesWalkingCustomer($customer),
+                'data' => $walking_customer,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
