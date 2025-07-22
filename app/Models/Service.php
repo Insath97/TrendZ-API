@@ -25,4 +25,9 @@ class Service extends Model
     {
         return $this->belongsTo(Shop::class, 'saloon_id');
     }
+
+    public function walkingCustomers()
+    {
+        return $this->belongsToMany(WalkingCustomer::class, 'customer_service');
+    }
 }
