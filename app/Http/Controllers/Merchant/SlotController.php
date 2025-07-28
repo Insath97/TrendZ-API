@@ -83,8 +83,7 @@ class SlotController extends Controller
         try {
             $merchant = Auth::user('merchant');
             $slot = Slot::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
-            $slot->delete_status = 0;
-            $slot->save();
+            $slot->delete();
 
             return response()->json([
                 'success' => true,
