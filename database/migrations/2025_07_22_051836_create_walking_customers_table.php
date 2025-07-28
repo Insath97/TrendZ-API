@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('walking_customers', function (Blueprint $table) {
             $table->id();
+/*             $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade'); */
             $table->string('fullname');
             $table->integer('age');
             $table->string('phone_number');
-            $table->enum('gender',['male','female','others']);
+            $table->enum('gender', ['male', 'female', 'others']);
             $table->string('address')->nullable();
             $table->string('email')->nullable();
             $table->string('occupation')->nullable();

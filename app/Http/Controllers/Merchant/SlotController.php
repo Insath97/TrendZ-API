@@ -68,6 +68,7 @@ class SlotController extends Controller
         $slot->start_time = $request->start_time;
         $slot->end_time = $request->end_time;
         $slot->max_bookings = $request->max_bookings;
+        $slot->is_active = $slot->is_active === 1 ? 0 : 1;
         $slot->save();
 
         return response()->json([
