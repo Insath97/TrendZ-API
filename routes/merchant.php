@@ -29,6 +29,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
 
     /* particular shop time slots */
     Route::patch('deactivate-slot/{id}', [SlotController::class, 'deactivateSlot']);
+    Route::patch('slot/{id}/restore', [SlotController::class, 'restore']);
     Route::apiResource('slots', SlotController::class);
 
     /* walking customer */
