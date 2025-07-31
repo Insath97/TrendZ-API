@@ -15,7 +15,6 @@ class SlotController extends Controller
         $merchant = Auth::user('merchant');
 
         $slot = Slot::where('saloon_id', $merchant->saloon_id)
-            ->where(['is_active' => true, 'delete_status' => 1])
             ->get();
 
         if ($slot->isEmpty()) {
