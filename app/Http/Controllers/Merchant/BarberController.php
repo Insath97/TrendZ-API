@@ -64,7 +64,7 @@ class BarberController extends Controller
 
     public function show(string $id)
     {
-        $barber = Barber::with('saloon')->find($id);
+        $barber = Barber::with('shops')->find($id);
 
 
         if (!$barber) {
