@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BarberResource;
 use App\Models\Barber;
-use Illuminate\Http\Request;
 use App\Traits\FileUploadTrait;
+use Illuminate\Http\Request;
 
 class BarberController extends Controller
 {
