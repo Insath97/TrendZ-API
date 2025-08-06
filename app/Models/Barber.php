@@ -24,6 +24,6 @@ class Barber extends Model
 
     public function shop()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Shop::class, 'saloon_id');
     }
 }
