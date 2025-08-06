@@ -42,7 +42,7 @@ class BarberController extends Controller
             $barber->code = $request->code;
             $barber->phone = $request->phone;
             $barber->email = $request->email;
-            $barber->image = $request->image;
+            $barber->image = $imagePath ?? "/image";
             $barber->description = $request->description;
             $barber->save();
 
