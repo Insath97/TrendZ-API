@@ -34,6 +34,8 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::apiResource('slots', SlotController::class);
 
     /* Barber */
+    Route::patch('/{id}/toggle-active', [BarberController::class, 'toggleActive']);
+    Route::patch('/{id}/toggle-available', [BarberController::class, 'toggleAvailable']);
     Route::apiResource('barber', BarberController::class);
 
     /* walking customer */

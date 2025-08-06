@@ -145,4 +145,56 @@ class BarberController extends Controller
             ], 500);
         }
     }
+
+    public function toggleActive(string $id)
+    {
+        try {
+            $barber = Barber::findOrFail($id);
+
+            $barber->is_active = !$barber->is_active;
+            $barber->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Barber active status updated successfully',
+                'data' => [
+                    'barber_id' => $barber->id,
+                    'name' => $barber->name,
+                    'status' => $barber->is_active ? 'active' : 'inactive'
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update barber status',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toggleAvailable(string $id)
+    {
+        try {
+            $barber = Barber::findOrFail($id);
+
+            $barber->is_available = !$barber->is_available;
+            $barber->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Barber availability updated successfully',
+                'data' => [
+                    'barber_id' => $barber->id,
+                    'name' => $barber->name,
+                    'availability' => $barber->is_available ? 'available' : 'unavailable'
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update barber availability',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
