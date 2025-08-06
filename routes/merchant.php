@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ShopController;
+use App\Http\Controllers\Merchant\BarberController;
 use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\MerchantAuthController;
 use App\Http\Controllers\Merchant\ServiceController;
@@ -31,6 +32,9 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::patch('deactivate-slot/{id}', [SlotController::class, 'deactivateSlot']);
     Route::patch('slot/{id}/restore', [SlotController::class, 'restore']);
     Route::apiResource('slots', SlotController::class);
+
+    /* Barber */
+    Route::apiResource('barber', BarberController::class);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);

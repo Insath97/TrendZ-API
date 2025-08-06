@@ -40,4 +40,9 @@ class Shop extends Model
     {
         return $this->hasMany(Slot::class, 'saloon_id');
     }
+
+    public function barbers()
+    {
+        return $this->hasMany(Barber::class, 'saloon_id');
+    }
 }

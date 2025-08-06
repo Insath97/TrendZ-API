@@ -36,7 +36,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:admi
     Route::get('deactive-merchant/{id}', [MerchantController::class, 'MerchantToggle']);
     Route::apiResource('merchant', MerchantController::class);
 });
-
+  
 /*
     Pending Work
 
