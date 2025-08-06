@@ -22,7 +22,7 @@ class Barber extends Model
         'is_available'
     ];
 
-    public function shop()
+    public function shops()
     {
         return $this->belongsTo(Shop::class, 'saloon_id');
     }

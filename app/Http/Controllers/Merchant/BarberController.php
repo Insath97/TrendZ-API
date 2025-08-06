@@ -14,7 +14,7 @@ class BarberController extends Controller
 
     public function index()
     {
-        $barber = Barber::with('shop')->latest()->get();
+        $barber = Barber::with('shops')->latest()->get();
 
         if ($barber->isEmpty()) {
             return response()->json(['message' => 'No barbers found'], 200);
@@ -46,7 +46,7 @@ class BarberController extends Controller
             $barber->description = $request->description;
             $barber->save();
 
-            $barber = Barber::with('saloon')->find($barber->id);
+            $barber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
                 'success' => true,
@@ -85,7 +85,7 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $barber = Barber::with('shop')->findOrFail($id);
+            $barber = Barber::with('shops')->findOrFail($id);
             $barber->saloon_id = $request->saloon_id;
             $barber->name = $request->name;
             $barber->code = $request->code;
@@ -95,7 +95,7 @@ class BarberController extends Controller
             $barber->description = $request->description;
             $barber->save();
 
-            $updatedBarber = Barber::with('shop')->find($barber->id);
+            $updatedBarber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
                 'success' => true,
@@ -114,7 +114,7 @@ class BarberController extends Controller
     public function destroy(string $id)
     {
         try {
-            $barber = Barber::with('saloon')->findOrFail($id);
+            $barber = Barber::with('shops')->findOrFail($id);
             $barber->delete();
 
             return response()->json([
