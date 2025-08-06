@@ -85,16 +85,32 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $barber = Barber::with('shops')->findOrFail($id);
+            $request->validate([
+                'saloon_id' => 'required|exists:shops,id',
+                'name' => 'required|string',
+                'code' => 'required|string|unique:barbers,code,' . $id,
+                // Add other validation rules as needed
+            ]);
+
+            $barber = Barber::findOrFail($id);
+
+            // Handle image upload if new image is provided
+            if ($request->hasFile('image')) {
+                $imagePath = $this->handleFileUpload($request, 'image', $barber->image, 'barber', 'barber');
+                $barber->image = $imagePath ?? $barber->image;
+            }
+
+            // Update fields
             $barber->saloon_id = $request->saloon_id;
             $barber->name = $request->name;
             $barber->code = $request->code;
-            $barber->phone = $request->phone;
-            $barber->email = $request->email;
-            $barber->image = $request->image;
-            $barber->description = $request->description;
+            $barber->phone = $request->phone ?? $barber->phone;
+            $barber->email = $request->email ?? $barber->email;
+            $barber->description = $request->description ?? $barber->description;
+
             $barber->save();
 
+            // Reload with relationship
             $updatedBarber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
