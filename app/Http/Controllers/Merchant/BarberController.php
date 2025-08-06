@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BarberResource;
 use App\Models\Barber;
 use Illuminate\Http\Request;
+use App\Traits\FileUploadTrait;
 
 class BarberController extends Controller
 {
+    use FileUploadTrait;
+
     public function index()
     {
         $barber = Barber::with('shop')->latest()->get();
