@@ -28,6 +28,14 @@ class BarberController extends Controller
     public function store(Request $request)
     {
         try {
+            $imagePath = $this->handleFileUpload($request, 'image', null, 'barber', 'barber');
+
+            if (!$imagePath) {
+                return redirect()->back()
+                    ->with('error', 'Failed to upload image. Please try again.')
+                    ->withInput();
+            }
+
             $barber = new Barber();
             $barber->saloon_id = $request->saloon_id;
             $barber->name = $request->name;
