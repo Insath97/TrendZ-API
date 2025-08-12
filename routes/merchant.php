@@ -15,9 +15,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.'], function () {
 
     /* merchant login */
     Route::post('login', [MerchantAuthController::class, 'handleLogin']);
-    Route::get('customers', function () {
-        return response()->json(['status' => 'API is working!']);
-    });
+    Route::get('customers', [CustomerController::class, 'index']);
 });
 
 Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['auth:merchant']], function () {
