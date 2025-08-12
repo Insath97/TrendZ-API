@@ -20,22 +20,4 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# CORS headers for images and other static files
-<IfModule mod_headers.c>
-    # Images
-    <FilesMatch "\.(jpg|jpeg|png|gif|ico|webp|svg|avif)$">
-        Header set Access-Control-Allow-Origin "*"
-        Header set Access-Control-Allow-Methods "GET, OPTIONS"
-        Header set Access-Control-Allow-Headers "Content-Type, Authorization"
-    </FilesMatch>
 
-    # Fonts
-    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
-
-    # CSS and JavaScript
-    <FilesMatch "\.(css|js)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
-</IfModule>
