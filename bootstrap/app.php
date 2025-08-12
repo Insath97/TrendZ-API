@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth:api' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
             'jwt.refresh' => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\RefreshToken::class,
         ]);
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $e, Request $request) {
