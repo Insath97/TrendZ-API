@@ -9,9 +9,12 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function getCustomers()
+    public function index()
     {
+
         $customer = Customer::with('location')->get();
+
+        dd($customer);
 
         if ($customer->isEmpty()) {
             return response()->json(['message' => 'No Data Found'], 200);
