@@ -11,7 +11,7 @@ class CustomerController extends Controller
 {
     public function getCustomers()
     {
-        $customer = Customer::all();
+        $customer = Customer::with('location')->get();
 
         if ($customer->isEmpty()) {
             return response()->json(['message' => 'No Data Found'], 200);
