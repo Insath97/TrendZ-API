@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Merchant\BarberController;
+use App\Http\Controllers\Merchant\CustomerController;
 use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\MerchantAuthController;
 use App\Http\Controllers\Merchant\ServiceController;
@@ -40,6 +41,9 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
+
+    /* customers */
+    Route::get('customers', [CustomerController::class, 'index']);
 });
 
 /*

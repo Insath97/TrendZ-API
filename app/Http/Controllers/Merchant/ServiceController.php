@@ -129,7 +129,7 @@ class ServiceController extends Controller
                     'status' => $service->status ? 'active' : 'inactive',
                 ],
             ], 200);
-            
+
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
