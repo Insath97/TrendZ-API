@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function getCustomers()
     {
         $customer = Customer::all();
 
@@ -19,7 +19,7 @@ class CustomerController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => CustomerResourse::collection($customer),
+            'data' => $customer,
         ], 200);
     }
 }
