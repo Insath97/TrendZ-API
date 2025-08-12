@@ -39,11 +39,11 @@ class HomeController extends Controller
 
     public function cusShops(string $id)
     {
-        $shop = Shop::with('location')->find($id);
+        $shop = Shop::with('location', 'services', 'barbers', 'slots')->find($id);
 
         return response()->json([
             'success' => true,
-            'data' => new ShopResource($shop)
+            'data' => $shop
         ], 200);
     }
 
@@ -74,6 +74,11 @@ class HomeController extends Controller
             'message' => 'Services retrieved successfully',
             'data' => $services
         ], 200);
+    }
+
+    public function cusBarbers(string $id)
+    {
+
     }
 
     public function cusSlots(string $id)
