@@ -15,6 +15,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.'], function () {
 
     /* merchant login */
     Route::post('login', [MerchantAuthController::class, 'handleLogin']);
+    Route::get('customers', [CustomerController::class, 'getCustomers']);
 });
 
 Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['auth:merchant']], function () {
@@ -43,7 +44,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::apiResource('walking-customer', WalkingCustomer::class);
 
     /* customers */
-    Route::get('customers', [CustomerController::class, 'getCustomers']);
+
 });
 
 /*
