@@ -92,96 +92,32 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            // Get all input data (works for both JSON and form-data)
-            $inputData = array_filter($request->all());
-
-            $validator = Validator::make($inputData, [
-                /* 'name' => 'required|string',
-                'code' => 'required|string|unique:barbers,code,' . $id, */
-                // Add other validation rules
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            $merchant = Auth::guard('merchant')->user();
-            $barber = Barber::findOrFail($id);
-
-            if ($barber->saloon_id != $merchant->saloon_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Permission denied',
-                ], 403);
-            }
-
-            // Handle file upload
-            if ($request->hasFile('image')) {
-                $imagePath = $this->handleFileUpload($request, 'image', $barber->image, 'barber', 'barber');
-                $barber->image = $imagePath ?? $barber->image;
-            }
-
-            // Update only the fields that were actually sent in the request
-            $updateData = [
-                'name' => $inputData['name'] ?? $barber->name,
-                'code' => $inputData['code'] ?? $barber->code,
-                'phone' => $inputData['phone'] ?? $barber->phone,
-                'email' => $inputData['email'] ?? $barber->email,
-                'description' => $inputData['description'] ?? $barber->description
-            ];
-
-            $barber->update($updateData);
-
-            $updatedBarber = Barber::with('shops')->find($barber->id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Barber updated successfully',
-                'data' => $updatedBarber,
-            ], 200);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update barber',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-    public function destroy(string $id)
-    {
-        try {
             $merchant = Auth::user('merchant');
+            $barber = Barber::with('shops')->findOrFail($id);
 
-            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
+            $imagePath = $this->handleFileUpload($request, 'image', null, 'barber', 'barber');
 
-            // Delete associated image file if exists
-            if ($barber->image) {
-                $this->deleteFile($barber->image);
-            }
+            $barber->saloon_id = $merchant->saloon_id;
+            $barber->name = $request->name;
+            $barber->code = $request->code;
+            $barber->phone = $request->phone;
+            $barber->email = $request->email;
+            $barber->image = !empty($imagepath) ? $imagepath : $barber->image;
+            $barber->description = $request->description;
+            $barber->save();
 
-            $barber->delete();
+            $barber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Barber deleted successfully',
-                'data' => [
-                    'deleted_id' => $id,
-                    'image_cleaned' => isset($barber->image)
-                ]
-            ], 200);
+                'message' => 'Barber Updated successfully',
+                'data' => $barber,
+            ], 201);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete barber',
-                'error' => $e->getMessage(),
-                'debug' => [
-                    'barber_id' => $id,
-                    'image_path' => $barber->image ?? null
-                ]
+                'message' => 'Failed to create barber',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
