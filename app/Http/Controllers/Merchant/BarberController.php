@@ -96,8 +96,8 @@ class BarberController extends Controller
             $inputData = array_filter($request->all());
 
             $validator = Validator::make($inputData, [
-                'name' => 'required|string',
-                'code' => 'required|string|unique:barbers,code,' . $id,
+                /* 'name' => 'required|string',
+                'code' => 'required|string|unique:barbers,code,' . $id, */
                 // Add other validation rules
             ]);
 
