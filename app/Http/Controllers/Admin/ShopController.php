@@ -93,5 +93,42 @@ class ShopController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to get shop data'], 500);
         }
     }
+    
+    public function updateBookingFees(Request $request, $shopId)
+    {
+        try {
+            // Get authenticated merchant
+            $merchant = Auth::guard('merchant')->user();
 
+            // Verify merchant owns the shop
+            $shop = Shop::where('id', $shopId)
+                ->whereHas('merchants', function ($q) use ($merchant) {
+                    $q->where('merchant_id', $merchant->id);
+                })
+                ->firstOrFail();
+
+            // Validate input
+            $validated = $request->validate([
+                'booking_fees' => 'required|numeric|min:0|max:9999'
+            ]);
+
+            $shop->booking_fees = $validated['booking_fees'];
+            $shop->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking fees updated successfully',
+                'data' => [
+                    'shop_id' => $shop->id,
+                    'new_fees' => $shop->booking_fees
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update booking fees',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

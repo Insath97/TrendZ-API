@@ -25,6 +25,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
 
     /* fetch all shops */
     Route::get('get-shop', [ShopController::class, 'getShops']);
+    ROute::get('shops/booking-fees', [ShopController::class, 'updateBookingFees']);
 
     /* Particular Shop Services */
     Route::get('deactivate-service/{id}', [ServiceController::class, 'deactivateService']);
