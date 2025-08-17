@@ -105,13 +105,14 @@ class BarberController extends Controller
 
             $imagePath = $this->handleFileUpload($request, 'image', null, 'barber', 'barber');
 
+            // Update only provided fields (fallback to existing values)
             $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->name;
-            $barber->code = $request->code;
-            $barber->phone = $request->phone;
-            $barber->email = $request->email;
-            $barber->image = !empty($imagepath) ? $imagepath : $barber->image;
-            $barber->description = $request->description;
+            $barber->name = $request->input('name', $barber->name);
+            $barber->code = $request->input('code', $barber->code);
+            $barber->phone = $request->input('phone', $barber->phone);
+            $barber->email = $request->input('email', $barber->email);
+            $barber->image = !empty($imagePath) ? $imagePath : $barber->image;
+            $barber->description = $request->input('description', $barber->description);
             $barber->save();
 
             $barber = Barber::with('shops')->find($barber->id);
