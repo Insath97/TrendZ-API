@@ -7,6 +7,7 @@ use App\Http\Resources\BarberResource;
 use App\Models\Barber;
 use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarberController extends Controller
 {
@@ -14,7 +15,9 @@ class BarberController extends Controller
 
     public function index()
     {
-        $barber = Barber::with('shops')->latest()->get();
+        $merchant = Auth::user('merchant');
+
+        $barber = Barber::with('shops')->where('saloon_id', $merchant->saloon_id)->latest()->get();
 
         if ($barber->isEmpty()) {
             return response()->json(['message' => 'No barbers found'], 200);
@@ -28,6 +31,8 @@ class BarberController extends Controller
     public function store(Request $request)
     {
         try {
+            $merchant = Auth::user('merchant');
+
             $imagePath = $this->handleFileUpload($request, 'image', null, 'barber', 'barber');
 
             if (!$imagePath) {
@@ -37,7 +42,7 @@ class BarberController extends Controller
             }
 
             $barber = new Barber();
-            $barber->saloon_id = $request->saloon_id;
+            $barber->saloon_id = $merchant->saloon_id;
             $barber->name = $request->name;
             $barber->code = $request->code;
             $barber->phone = $request->phone;
@@ -64,7 +69,8 @@ class BarberController extends Controller
 
     public function show(string $id)
     {
-        $barber = Barber::with('shops')->find($id);
+        $merchant = Auth::user('merchant');
+        $barber = Barber::with('shops')->where('saloon_id', $merchant->saloon_id)->find($id);
 
 
         if (!$barber) {
@@ -92,7 +98,9 @@ class BarberController extends Controller
                 // Add other validation rules as needed
             ]);
 
-            $barber = Barber::findOrFail($id);
+            $merchant = Auth::user('merchant');
+
+            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
 
             // Handle image upload if new image is provided
             if ($request->hasFile('image')) {
@@ -101,7 +109,7 @@ class BarberController extends Controller
             }
 
             // Update fields
-            $barber->saloon_id = $request->saloon_id;
+            $barber->saloon_id = $merchant->saloon_id;
             $barber->name = $request->name;
             $barber->code = $request->code;
             $barber->phone = $request->phone ?? $barber->phone;
@@ -130,7 +138,9 @@ class BarberController extends Controller
     public function destroy(string $id)
     {
         try {
-            $barber = Barber::with('shops')->findOrFail($id);
+            $merchant = Auth::user('merchant');
+
+            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
 
             // Delete associated image file if exists
             if ($barber->image) {
@@ -163,7 +173,9 @@ class BarberController extends Controller
     public function toggleActive(string $id)
     {
         try {
-            $barber = Barber::findOrFail($id);
+            $merchant = Auth::user('merchant');
+
+            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
 
             $barber->is_active = !$barber->is_active;
             $barber->save();
@@ -189,7 +201,9 @@ class BarberController extends Controller
     public function toggleAvailable(string $id)
     {
         try {
-            $barber = Barber::findOrFail($id);
+            $merchant = Auth::user('merchant');
+
+            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
 
             $barber->is_available = !$barber->is_available;
             $barber->save();
