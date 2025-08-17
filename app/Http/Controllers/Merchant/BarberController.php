@@ -92,7 +92,6 @@ class BarberController extends Controller
     {
         try {
             $request->validate([
-                'saloon_id' => 'required|exists:shops,id',
                 'name' => 'required|string',
                 'code' => 'required|string|unique:barbers,code,' . $id,
                 // Add other validation rules as needed
