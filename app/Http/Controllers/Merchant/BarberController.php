@@ -100,12 +100,12 @@ class BarberController extends Controller
 
             // Update only provided fields (fallback to existing values)
             $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->input('name', $barber->name);
-            $barber->code = $request->input('code', $barber->code);
-            $barber->phone = $request->input('phone', $barber->phone);
-            $barber->email = $request->input('email', $barber->email);
+            $barber->name = $request->input('name');
+            $barber->code = $request->input('code');
+            $barber->phone = $request->input('phone');
+            $barber->email = $request->input('email');
             $barber->image = !empty($imagePath) ? $imagePath : $barber->image;
-            $barber->description = $request->input('description', $barber->description);
+            $barber->description = $request->input('description');
             $barber->save();
 
             $barber = Barber::with('shops')->find($barber->id);
