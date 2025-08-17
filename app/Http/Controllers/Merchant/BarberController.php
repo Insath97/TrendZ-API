@@ -92,6 +92,14 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            $request->validate([
+                'name' => 'required|string',
+                'code' => 'required|string',
+                'phone' => 'required|string',
+                'email' => 'required|email',
+                // Add other validation rules as needed
+            ]);
+
             $merchant = Auth::user('merchant');
             $barber = Barber::with('shops')->findOrFail($id);
 
