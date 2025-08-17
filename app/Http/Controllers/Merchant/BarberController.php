@@ -120,6 +120,42 @@ class BarberController extends Controller
             ], 500);
         }
     }
+
+    public function destroy(string $id)
+    {
+        try {
+            $merchant = Auth::user('merchant');
+
+            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
+
+            // Delete associated image file if exists
+            if ($barber->image) {
+                $this->deleteFile($barber->image);
+            }
+
+            $barber->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Barber deleted successfully',
+                'data' => [
+                    'deleted_id' => $id,
+                    'image_cleaned' => isset($barber->image)
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete barber',
+                'error' => $e->getMessage(),
+                'debug' => [
+                    'barber_id' => $id,
+                    'image_path' => $barber->image ?? null
+                ]
+            ], 500);
+        }
+    }
+
     public function toggleActive(string $id)
     {
         try {
