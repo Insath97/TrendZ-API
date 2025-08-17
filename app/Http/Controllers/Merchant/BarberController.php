@@ -91,27 +91,46 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            $request->validate([
+                'name' => 'required|string',
+                'code' => 'required|string|unique:barbers,code,' . $id,
+                // Add other validation rules as needed
+            ]);
+
             $merchant = Auth::guard('merchant')->user();
 
-            $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
+            // First, check if the barber exists (without saloon_id condition)
+            $barber = Barber::find($id);
+            if (!$barber) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barber not found',
+                ], 404);
+            }
 
-            // Handle image upload if new image is provided
+            // Then verify if the barber belongs to the merchant's saloon
+            if ($barber->saloon_id != $merchant->saloon_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You do not have permission to update this barber',
+                ], 403);
+            }
+
+            // Rest of your original code remains the same...
             if ($request->hasFile('image')) {
                 $imagePath = $this->handleFileUpload($request, 'image', $barber->image, 'barber', 'barber');
                 $barber->image = $imagePath ?? $barber->image;
             }
 
-            // Update fields
             $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->name ?? $barber->name;
-            $barber->code = $request->code ?? $barber->code;
+            $barber->name = $request->name;
+            $barber->code = $request->code;
             $barber->phone = $request->phone ?? $barber->phone;
             $barber->email = $request->email ?? $barber->email;
             $barber->description = $request->description ?? $barber->description;
 
             $barber->save();
 
-            // Reload with relationship
             $updatedBarber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
