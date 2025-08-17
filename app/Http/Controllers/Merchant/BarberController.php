@@ -103,8 +103,8 @@ class BarberController extends Controller
 
             // Update fields
             $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->name;
-            $barber->code = $request->code;
+            $barber->name = $request->name ?? $barber->name;
+            $barber->code = $request->code ?? $barber->code;
             $barber->phone = $request->phone ?? $barber->phone;
             $barber->email = $request->email ?? $barber->email;
             $barber->description = $request->description ?? $barber->description;
