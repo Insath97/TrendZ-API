@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BarberResource;
 use App\Models\Barber;
 use App\Traits\FileUploadTrait;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -91,45 +92,49 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $request->validate([
+            // Get all input data (works for both JSON and form-data)
+            $inputData = array_filter($request->all());
+
+            $validator = Validator::make($inputData, [
                 'name' => 'required|string',
                 'code' => 'required|string|unique:barbers,code,' . $id,
-                // Add other validation rules as needed
+                // Add other validation rules
             ]);
 
-            $merchant = Auth::guard('merchant')->user();
-
-            // First, check if the barber exists (without saloon_id condition)
-            $barber = Barber::FindOrFail($id);
-            if (!$barber) {
+            if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Barber not found',
-                ], 404);
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
             }
 
-            // Then verify if the barber belongs to the merchant's saloon
+            $merchant = Auth::guard('merchant')->user();
+            $barber = Barber::findOrFail($id);
+
             if ($barber->saloon_id != $merchant->saloon_id) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You do not have permission to update this barber',
+                    'message' => 'Permission denied',
                 ], 403);
             }
 
-            // Rest of your original code remains the same...
+            // Handle file upload
             if ($request->hasFile('image')) {
                 $imagePath = $this->handleFileUpload($request, 'image', $barber->image, 'barber', 'barber');
                 $barber->image = $imagePath ?? $barber->image;
             }
 
-            $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->name;
-            $barber->code = $request->code;
-            $barber->phone = $request->phone ?? $barber->phone;
-            $barber->email = $request->email ?? $barber->email;
-            $barber->description = $request->description ?? $barber->description;
+            // Update only the fields that were actually sent in the request
+            $updateData = [
+                'name' => $inputData['name'] ?? $barber->name,
+                'code' => $inputData['code'] ?? $barber->code,
+                'phone' => $inputData['phone'] ?? $barber->phone,
+                'email' => $inputData['email'] ?? $barber->email,
+                'description' => $inputData['description'] ?? $barber->description
+            ];
 
-            $barber->save();
+            $barber->update($updateData);
 
             $updatedBarber = Barber::with('shops')->find($barber->id);
 
@@ -146,7 +151,6 @@ class BarberController extends Controller
             ], 500);
         }
     }
-
     public function destroy(string $id)
     {
         try {
