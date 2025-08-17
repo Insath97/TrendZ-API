@@ -116,7 +116,7 @@ class ShopController extends Controller
                 'message' => 'Booking fees updated successfully',
                 'data' => [
                     'shop_id' => $shop->id,
-                    'new_fees' => $shop->booking_fees
+                    'booking_fees' => $shop->booking_fees
                 ]
             ]);
         } catch (\Exception $e) {
