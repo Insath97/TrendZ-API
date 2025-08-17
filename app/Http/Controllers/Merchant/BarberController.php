@@ -91,24 +91,33 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             $merchant = Auth::user('merchant');
+
+            // Validate request
+            $validated = $request->validate([
+                'name'        => 'required|string|max:255',
+                'code'        => 'required|string|max:50',
+                'phone'       => 'nullable|string|max:20',
+                'email'       => 'nullable|email|max:255',
+                'description' => 'nullable|string',
+                'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
             $barber = Barber::where('saloon_id', $merchant->saloon_id)->findOrFail($id);
 
-            // Handle image upload if new image is provided
+            // Handle image upload
             if ($request->hasFile('image')) {
                 $imagePath = $this->handleFileUpload($request, 'image', $barber->image, 'barber', 'barber');
                 $barber->image = $imagePath ?? $barber->image;
             }
 
-            // Update fields
-            $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->name;
-            $barber->code = $request->code;
-            $barber->phone = $request->phone ?? $barber->phone;
-            $barber->email = $request->email ?? $barber->email;
-            $barber->description = $request->description ?? $barber->description;
+            // Update fields (now safe because validated)
+            $barber->saloon_id  = $merchant->saloon_id;
+            $barber->name       = $validated['name'];
+            $barber->code       = $validated['code'];
+            $barber->phone      = $validated['phone'] ?? $barber->phone;
+            $barber->email      = $validated['email'] ?? $barber->email;
+            $barber->description = $validated['description'] ?? $barber->description;
 
             $barber->save();
 
@@ -118,16 +127,17 @@ class BarberController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Barber updated successfully',
-                'data' => $updatedBarber,
+                'data'    => $updatedBarber,
             ], 200);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update barber',
-                'error' => $e->getMessage()
+                'error'   => $e->getMessage()
             ], 500);
         }
     }
+
 
     public function destroy(string $id)
     {
