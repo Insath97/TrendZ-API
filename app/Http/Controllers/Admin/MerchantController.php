@@ -43,8 +43,8 @@ class MerchantController extends Controller
             $branchName = $branch ? $branch->name : 'Unknown Branch';
 
             /* send mail */
-            Mail::to($request->email)->send(new MerchantCredentialsMail($request->email, $request->password, $request->name, $branchName));
-
+          /*   Mail::to($request->email)->send(new MerchantCredentialsMail($request->email, $request->password, $request->name, $branchName));
+ */
             return response()->json([
                 'success' => true,
                 'message' => 'Merchant created successfully',
