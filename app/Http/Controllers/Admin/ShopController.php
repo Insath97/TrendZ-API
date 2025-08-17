@@ -93,19 +93,15 @@ class ShopController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to get shop data'], 500);
         }
     }
-    
-    public function updateBookingFees(Request $request, $shopId)
+
+    public function updateBookingFees(Request $request)
     {
         try {
             // Get authenticated merchant
             $merchant = Auth::guard('merchant')->user();
 
             // Verify merchant owns the shop
-            $shop = Shop::where('id', $shopId)
-                ->whereHas('merchants', function ($q) use ($merchant) {
-                    $q->where('merchant_id', $merchant->id);
-                })
-                ->firstOrFail();
+            $shop = Shop::findOrFail($merchant->saloon_id);
 
             // Validate input
             $validated = $request->validate([
