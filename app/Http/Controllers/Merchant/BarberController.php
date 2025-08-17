@@ -94,7 +94,7 @@ class BarberController extends Controller
         try {
             $request->validate([
                 'name' => 'nullable|string|unique:barbers,name,' . $id,
-                'code' => 'required|string|unique:barbers,code,' . $id,
+                'code' => 'nullable|string|unique:barbers,code,' . $id,
                 'phone' => 'nullable|string',
                 'email' => 'nullable|email',
                 // Add other validation rules as needed
