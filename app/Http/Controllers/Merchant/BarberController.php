@@ -92,38 +92,34 @@ class BarberController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-
             $merchant = Auth::user('merchant');
             $barber = Barber::with('shops')->findOrFail($id);
 
             $imagePath = $this->handleFileUpload($request, 'image', null, 'barber', 'barber');
 
-            // Update only provided fields (fallback to existing values)
+            // Update fields (fallback to existing values if not provided)
             $barber->saloon_id = $merchant->saloon_id;
-            $barber->name = $request->input('name');
-            $barber->code = $request->input('code');
-            $barber->phone = $request->input('phone');
-            $barber->email = $request->input('email');
+            $barber->name = $request->input('name', $barber->name); // Fallback here
+            $barber->code = $request->input('code', $barber->code);
+            $barber->phone = $request->input('phone', $barber->phone);
+            $barber->email = $request->input('email', $barber->email);
             $barber->image = !empty($imagePath) ? $imagePath : $barber->image;
-            $barber->description = $request->input('description');
+            $barber->description = $request->input('description', $barber->description);
             $barber->save();
-
-            $barber = Barber::with('shops')->find($barber->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Barber Updated successfully',
-                'data' => $barber,
-            ], 201);
+                'data' => $barber->fresh('shops'), // Reload relationships
+            ], 200); // Use 200 (OK) for updates, not 201 (Created)
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create barber',
+                'message' => 'Failed to update barber',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
-
     public function toggleActive(string $id)
     {
         try {
