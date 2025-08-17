@@ -100,7 +100,7 @@ class BarberController extends Controller
             $merchant = Auth::guard('merchant')->user();
 
             // First, check if the barber exists (without saloon_id condition)
-            $barber = Barber::find($id);
+            $barber = Barber::FindOrFail($id);
             if (!$barber) {
                 return response()->json([
                     'success' => false,
