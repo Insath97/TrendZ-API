@@ -27,7 +27,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => $e->getMessage(),
+                    'message' => 'Unauthenticated.',
+                    'error' => 'Token not provided or invalid' 
+                ], 401);
+            }
+        });
+
+        // Add JWT exception handling
+        $exceptions->render(function (\PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Token error',
+                    'error' => $e->getMessage()
                 ], 401);
             }
         });

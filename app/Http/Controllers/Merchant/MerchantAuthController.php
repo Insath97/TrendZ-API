@@ -22,11 +22,21 @@ class MerchantAuthController extends Controller
         $merchant  = auth('merchant')->user();
         $merchant = Merchant::with('shop')->find($merchant->id);
 
+        $cookie = cookie(
+            'auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            false,
+            true
+        );
+
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
             'data' => $merchant,
-        ], 200);
+        ], 200)->cookie($cookie);
     }
 
     public function logout()

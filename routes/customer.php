@@ -35,7 +35,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
     Route::post('booking/create', [HomeController::class, 'createBooking']);
 
     /* cancel booking */
-    Route::post('booking/{id}/cancel', [HomeController::class, 'cancelBooking']);
+    Route::patch('booking/{id}/cancel', [HomeController::class, 'cancelBooking']);
 
     /* rescheduling booking */
     Route::post('booking/{id}/reschedule', [HomeController::class, 'rescheduleBooking']);

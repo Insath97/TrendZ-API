@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
+            $table->foreignId('barber_id')->nullable()->constrained('barbers')->onDelete('set null');
             $table->date('booking_date');
             $table->string('unique_reference')->unique();
             $table->integer('booking_number');

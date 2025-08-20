@@ -22,11 +22,21 @@ class AdminAuthController extends Controller
 
         $admin = auth('admin')->user();
 
+        $cookie = cookie(
+            'auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            false,
+            true
+        );
+
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
             'data' => $admin,
-        ], 200);
+        ], 200)->cookie($cookie);
     }
 
     public function logout(Request $request)

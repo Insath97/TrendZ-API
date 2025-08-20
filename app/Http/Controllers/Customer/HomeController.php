@@ -13,8 +13,12 @@ use App\Models\Location;
 use App\Models\Service;
 use App\Models\Shop;
 use App\Models\Slot;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use function PHPUnit\Framework\isEmpty;
 
 class HomeController extends Controller
 {
@@ -76,11 +80,6 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function cusBarbers(string $id)
-    {
-
-    }
-
     public function cusSlots(string $id)
     {
         $shop = Shop::find($id);
@@ -110,9 +109,12 @@ class HomeController extends Controller
         ], 200);
     }
 
-    public function createBooking(CreateBookingRequest $request)
+    public function createBooking(Request $request)
     {
         try {
+
+            $total_amount = 0;
+            $service_ids = [];
 
             /* validate slots */
             $slot = Slot::find($request->slot_id);
@@ -167,22 +169,75 @@ class HomeController extends Controller
                 ->where('status', 'upcoming')
                 ->count() + 1;
 
+
+
+            /* total amount calculation */
+            if (!empty($request->services) && is_array($request->services)) {
+                foreach ($request->services as $service) {
+                    // Get service price from database to ensure accuracy
+                    $service_model = Service::find($service['service_id']);
+
+                    if (!$service_model) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Service ID {$service['service_id']} not found",
+                        ], 422);
+                    }
+
+                    if (!$service_model->status || !$service_model->delete_status) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => "Service '{$service_model->name}' is not available",
+                        ], 422);
+                    }
+
+                    $total_amount += $service_model->price;
+                    $service_ids[] = $service_model->id;
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid or missing services data',
+                ], 422);
+            }
+
+            if ($shop->booking_fees > 0) {
+                $total_amount += $shop->booking_fees;
+            }
+
+            if (abs($total_amount - $request->total_amount) > 0.01) { // Allow for small floating point differences
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Total amount mismatch',
+                    'details' => [
+                        'calculated_total' => $total_amount,
+                        'requested_total' => $request->total_amount,
+                        'difference' => abs($total_amount - $request->total_amount)
+                    ]
+                ], 422);
+            }
+
+            $customer = Auth::guard('customer')->user();
+
             $booking = new Booking();
-            $booking->customer_id = auth('customer')->id();
+            $booking->customer_id = $customer->id;
             $booking->shop_id = $request->shop_id;
+            $booking->barber_id =  $request->barber_id ?? null;
             $booking->booking_date = $request->booking_date;
             $booking->unique_reference = $bookingNumber;
             $booking->booking_number = $appoinment_number;
-            $booking->total_amount = $request->total_amount;
+            $booking->total_amount = $total_amount;
             $booking->save();
 
             /* services get */
             if (!empty($request->services) && is_array($request->services)) {
                 foreach ($request->services as $service) {
+                    $service_model = Service::find($service['service_id']);
+
                     BookingService::create([
                         'booking_id' => $booking->id,
                         'service_id' => $service['service_id'],
-                        'total_amount ' => $request->total_amount,
+                        'total_amount ' => $service_model->price,
                     ]);
                 }
             } else {
@@ -212,29 +267,40 @@ class HomeController extends Controller
     {
         try {
             $booking = Booking::find($id);
+            $customer = Auth::guard('customer')->user();
 
-            if ($booking->status === 'canceled') {
-                return response()->json(
-                    [
-                        'success' => false,
-                        'message' => 'Booking is already canceled.'
-                    ],
-                    400
-                );
+            if (!$booking) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Booking not found.'
+                ], 404);
             }
 
-            $booking->status = 'canceled';
-            $booking->cancellation_reason = $request->cancellation_reason;
-            $booking->save();
+            // Check if the booking belongs to the authenticated customer
+            if ($booking->customer_id !== $customer->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized action.'
+                ], 403);
+            }
 
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'Booking has been canceled successfully.',
-                    'booking' => $booking
-                ],
-                200
-            );
+            if ($booking->status === 'canceled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Booking is already canceled.'
+                ], 400);
+            }
+
+            $booking->update([
+                'status' => 'canceled',
+                'cancellation_reason' => $request->cancellation_reason
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking has been canceled successfully.',
+                'booking' => $booking
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
