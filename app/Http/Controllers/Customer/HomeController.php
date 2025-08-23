@@ -482,7 +482,7 @@ class HomeController extends Controller
     }
 
     public function cancelledBooking()
-    {
+    {  
         try {
 
             if (!auth('customer')->check()) {
@@ -492,10 +492,10 @@ class HomeController extends Controller
                 ], 401);
             }
 
-            $customer_id = auth('customer')->id();
+            $customer = Auth::guard('customer')->user();
 
             $bookings = Booking::with('services', 'slots')
-                ->where('customer_id', $customer_id)
+                ->where('customer_id', $customer->id)
                 ->where('status', 'canceled')
                 ->with('services', 'slots')
                 ->get();

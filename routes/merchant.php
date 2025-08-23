@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Merchant\BarberController;
+use App\Http\Controllers\Merchant\BookingController;
 use App\Http\Controllers\Merchant\CustomerController;
 use App\Http\Controllers\Merchant\HomeController;
 use App\Http\Controllers\Merchant\MerchantAuthController;
@@ -42,7 +43,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::apiResource('barber', BarberController::class);
 
     /* booking */
-    
+    Route::get('today', [BookingController::class, 'todayBookings']);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
