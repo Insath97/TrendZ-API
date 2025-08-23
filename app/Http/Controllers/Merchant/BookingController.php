@@ -17,7 +17,7 @@ class BookingController extends Controller
 
             $perPage = $request->get('per_page', 15);
 
-            $booking = Booking::with('customer', 'barber', 'services', 'slots')->where('saloon_id', $merchant->saloon_id)
+            $booking = Booking::with('customer', 'barber', 'services', 'slots')->where('shop_id', $merchant->saloon_id)
                 ->whereDate('booking_date', Carbon::today())
                 ->where('status', 'upcoming')
                 ->orderBy('booking_date', 'asc')
