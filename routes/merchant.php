@@ -43,7 +43,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::apiResource('barber', BarberController::class);
 
     /* booking */
-    Route::get('today', [BookingController::class, 'todayBookings']);
+    Route::get('booking/today', [BookingController::class, 'todayBookings']);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
