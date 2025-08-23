@@ -9,6 +9,7 @@ use App\Http\Controllers\Merchant\MerchantAuthController;
 use App\Http\Controllers\Merchant\ServiceController;
 use App\Http\Controllers\Merchant\SlotController;
 use App\Http\Controllers\Merchant\WalkingCustomer;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
 
     /* booking */
     Route::get('booking/today', [BookingController::class, 'todayBookings']);
+    Route::get('booking/tomorrow', [BookingController::class, 'tomorrowBookings']);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
