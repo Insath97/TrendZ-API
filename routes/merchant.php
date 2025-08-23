@@ -47,6 +47,7 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::get('booking/today', [BookingController::class, 'todayBookings']);
     Route::get('booking/tomorrow', [BookingController::class, 'tomorrowBookings']);
     Route::get('booking/future', [BookingController::class, 'futureBookings']);
+    Route::get('booking/all', [BookingController::class, 'allBookings']);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);

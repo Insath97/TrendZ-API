@@ -102,4 +102,38 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all bookings with filters for merchant's shops
+     */
+    public function allBookings(Request $request)
+    {
+        try {
+            $merchant = Auth::guard('merchant')->user();
+
+            $perPage = $request->get('per_page', 15);
+            $status = $request->get('status');
+
+            $bookings = Booking::with('customer', 'barber', 'services', 'slots')
+                ->where('shop_id', $merchant->saloon_id)
+                ->when($status, function ($query) use ($status) {
+                    return $query->where('status', $status);
+                })
+                ->orderBy('booking_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All bookings retrieved successfully',
+                'data' => $bookings
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving bookings',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
