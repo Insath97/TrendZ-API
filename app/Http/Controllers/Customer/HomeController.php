@@ -410,10 +410,10 @@ class HomeController extends Controller
                 ], 401);
             }
 
-            $customer_id = auth('customer')->id();
+            $customer = Auth::guard('customer')->user();
 
             $bookings = Booking::with('services', 'slots')
-                ->where('customer_id', $customer_id)
+                ->where('customer_id', $customer->id)
                 ->where('status', 'upcoming')
                 ->with('services', 'slots')
                 ->get();
@@ -533,10 +533,10 @@ class HomeController extends Controller
                 ], 401);
             }
 
-            $customer_id = auth('customer')->id();
+            $customer = Auth::guard('customer')->user();
 
-            $bookings = Booking::with('services', 'slots')
-                ->where('customer_id', $customer_id)
+            $bookings = Booking::with('services', 'slots', 'barber')
+                ->where('customer_id', $customer->id)
                 ->with('services', 'slots')
                 ->get();
 

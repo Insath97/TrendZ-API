@@ -26,4 +26,9 @@ class Barber extends Model
     {
         return $this->belongsTo(Shop::class, 'saloon_id');
     }
+
+    public function booking()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

@@ -40,6 +40,11 @@ class Booking extends Model
         return $this->belongsToMany(Slot::class, 'booking_slots');
     }
 
+    public function barber()
+    {
+        return $this->belongsTo(Barber::class, 'barber_id');
+    }
+
     public function cancel($reason)
     {
         $this->update([

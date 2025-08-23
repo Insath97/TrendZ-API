@@ -41,6 +41,9 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::patch('/{id}/toggle-available', [BarberController::class, 'toggleAvailable']);
     Route::apiResource('barber', BarberController::class);
 
+    /* booking */
+    
+
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
 
