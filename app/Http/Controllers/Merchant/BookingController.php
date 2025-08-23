@@ -21,7 +21,7 @@ class BookingController extends Controller
                 ->whereDate('booking_date', Carbon::today())
                 ->where('status', 'upcoming')
                 ->orderBy('booking_date', 'asc')
-                ->orderBy('appointment_number', 'asc')
+                ->orderBy('booking_number', 'asc')
                 ->paginate($perPage);
 
             return response()->json([
