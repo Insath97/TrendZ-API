@@ -451,10 +451,10 @@ class HomeController extends Controller
                 ], 401);
             }
 
-            $customer_id = auth('customer')->id();
+            $customer = Auth::guard('customer')->user();
 
             $bookings = Booking::with('services', 'slots')
-                ->where('customer_id', $customer_id)
+                ->where('customer_id', $customer->id)
                 ->where('status', 'completed')
                 ->with('services', 'slots')
                 ->get();
