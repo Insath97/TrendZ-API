@@ -77,5 +77,8 @@ class Customer extends Authenticatable implements JWTSubject
         return Carbon::parse($this->dob)->age;
     }
 
-    
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

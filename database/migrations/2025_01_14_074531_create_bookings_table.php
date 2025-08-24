@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('unique_reference')->unique();
             $table->integer('booking_number');
             $table->decimal('total_amount', 10, 2);
-            $table->enum('status', ['upcoming', 'completed', 'canceled', 'rescheduled'])->default('upcoming');
+            $table->enum('status', ['upcoming', 'completed', 'canceled','processing', 'rescheduled'])->default('upcoming');
             $table->string('cancellation_reason')->nullable();
             $table->timestamps();
         });

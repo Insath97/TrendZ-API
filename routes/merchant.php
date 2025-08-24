@@ -17,7 +17,6 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.'], function () {
 
     /* merchant login */
     Route::post('login', [MerchantAuthController::class, 'handleLogin']);
-    Route::get('customers', [CustomerController::class, 'index']);
 });
 
 Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['auth:merchant']], function () {
@@ -48,11 +47,16 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     Route::get('booking/tomorrow', [BookingController::class, 'tomorrowBookings']);
     Route::get('booking/future', [BookingController::class, 'futureBookings']);
     Route::get('booking/all', [BookingController::class, 'allBookings']);
+    Route::patch('booking/process/{id}', [BookingController::class, 'startProcessing']);
+    Route::patch('booking/complete/{id}', [BookingController::class, 'completeBooking']);
+    Route::patch('booking/cancel/{id}', [BookingController::class, 'cancelBooking']);
+    Route::get('booking/queue', [BookingController::class, 'upcomingQueue']);
 
     /* walking customer */
     Route::apiResource('walking-customer', WalkingCustomer::class);
 
     /* customers */
+    Route::get('customers', [CustomerController::class, 'index']);
 });
 
 /*
