@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BookingInvoiceMail;
 use App\Models\Booking;
 use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -212,6 +214,8 @@ class BookingController extends Controller
 
             $booking->status = 'completed';
             $booking->save();
+
+            Mail::to($booking->customer->email)->send(new BookingInvoiceMail($booking));
 
             return response()->json([
                 'success' => true,
