@@ -384,4 +384,56 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get bookings dashboard summary
+     */
+    public function dashboardSummary()
+    {
+        try {
+            $merchant = Auth::guard('merchant')->user();
+            $shopId = $merchant->saloon_id;
+
+            $today = Carbon::today();
+            $tomorrow = Carbon::tomorrow();
+            $startOfMonth = Carbon::now()->startOfMonth();
+            $endOfMonth = Carbon::now()->endOfMonth();
+
+            $todayBookingsCount = Booking::where('shop_id', $shopId)
+                ->whereDate('booking_date', $today)
+                ->where('status', 'upcoming')
+                ->count();
+
+            $tomorrowBookingsCount = Booking::where('shop_id', $shopId)
+                ->whereDate('booking_date', $tomorrow)
+                ->where('status', 'upcoming')
+                ->count();
+
+            $todayRevenue = Booking::where('shop_id', $shopId)
+                ->whereDate('booking_date', $today)
+                ->where('status', 'completed')
+                ->sum('total_amount');
+
+            $monthlyRevenue = Booking::where('shop_id', $shopId)
+                ->whereBetween('booking_date', [$startOfMonth, $endOfMonth])
+                ->where('status', 'completed')
+                ->sum('total_amount');
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'today_bookings_count' => $todayBookingsCount,
+                    'tomorrow_bookings_count' => $tomorrowBookingsCount,
+                    'today_revenue' => (float) $todayRevenue,
+                    'monthly_revenue' => (float) $monthlyRevenue
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving dashboard summary',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -111,9 +111,10 @@ class HomeController extends Controller
 
     public function createBooking(Request $request)
     {
-        try {
+        try {;
 
             $total_amount = 0;
+            $service_amount = 0;
             $service_ids = [];
 
             /* validate slots */
@@ -191,6 +192,7 @@ class HomeController extends Controller
                         ], 422);
                     }
 
+                    $service_amount += $service_model->price;
                     $total_amount += $service_model->price;
                     $service_ids[] = $service_model->id;
                 }
@@ -226,6 +228,7 @@ class HomeController extends Controller
             $booking->booking_date = $request->booking_date;
             $booking->unique_reference = $bookingNumber;
             $booking->booking_number = $appoinment_number;
+            $booking->sub_total = $service_amount;
             $booking->total_amount = $total_amount;
             $booking->save();
 
@@ -482,7 +485,7 @@ class HomeController extends Controller
     }
 
     public function cancelledBooking()
-    {  
+    {
         try {
 
             if (!auth('customer')->check()) {

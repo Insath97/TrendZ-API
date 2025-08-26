@@ -24,6 +24,9 @@ Route::group(['prefix' => 'merchant', 'as' => 'merchant.', 'middleware' => ['aut
     /* merchant Logout */
     Route::post('logout', [MerchantAuthController::class, 'logout']);
 
+    /* dashboard summary */
+    Route::get('dashboard/summary', [BookingController::class, 'dashboardSummary']);
+
     /* fetch all shops */
     Route::get('get-shop', [ShopController::class, 'getShops']);
     ROute::get('shops/booking-fees', [ShopController::class, 'updateBookingFees']);
