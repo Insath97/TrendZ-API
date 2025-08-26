@@ -148,7 +148,7 @@ class BookingController extends Controller
         try {
             $merchant = Auth::guard('merchant')->user();
 
-            $booking = Booking::where('shop_id', $merchant->saloon_id)->find($id);
+            $booking = Booking::with('customer', 'barber', 'services', 'slots')->where('shop_id', $merchant->saloon_id)->find($id);
 
             if (!$booking) {
                 return response()->json([
@@ -196,7 +196,7 @@ class BookingController extends Controller
         try {
             $merchant = Auth::guard('merchant')->user();
 
-            $booking = Booking::where('shop_id', $merchant->saloon_id)->find($id);
+            $booking = Booking::with('customer', 'barber', 'services', 'slots')->where('shop_id', $merchant->saloon_id)->find($id);
 
             if (!$booking) {
                 return response()->json([
@@ -239,7 +239,7 @@ class BookingController extends Controller
         try {
             $merchant = Auth::guard('merchant')->user();
 
-            $booking = Booking::where('shop_id', $merchant->saloon_id)->find($id);
+            $booking = Booking::with('customer', 'barber', 'services', 'slots')->where('shop_id', $merchant->saloon_id)->find($id);
 
             if (!$booking) {
                 return response()->json([
