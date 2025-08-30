@@ -167,7 +167,6 @@ class HomeController extends Controller
 
             $appoinment_number = Booking::where('shop_id', $request->shop_id)
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
-                ->where('status', 'upcoming')
                 ->count() + 1;
 
 
