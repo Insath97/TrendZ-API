@@ -16,6 +16,13 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
     /* location */
     Route::get('get-location', [HomeController::class, 'getLocation']);
 
+    /* Google OAuth for web */
+    Route::get('google', [AuthController::class, 'redirectToGoogle']);
+    Route::get('google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+    /* Google OAuth for mobile */
+    Route::post('google/login', [AuthController::class, 'loginWithGoogleMobile']);
+
     /* testing data */
     Route::get('check', [HomeController::class, 'check']);
 });
