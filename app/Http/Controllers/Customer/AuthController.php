@@ -132,7 +132,6 @@ class AuthController extends Controller
         try {
             // Validate the request
             $validator = Validator::make($request->all(), [
-                'access_token' => 'required|string',
                 'id_token' => 'required|string',
             ]);
 
@@ -144,7 +143,7 @@ class AuthController extends Controller
             }
 
             // Verify the Google token
-            $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->access_token);
+            $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->id_token);
 
             return $this->handleGoogleUser($googleUser);
 
